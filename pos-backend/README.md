@@ -17,6 +17,28 @@ npm start
 npm run dev
 ```
 
+## Login incluido
+
+Esta rama incluye solo la logica de inicio de sesion de personal:
+
+- `POST /api/auth/login`: usuario/correo y contrasena.
+- `POST /api/auth/google`: validacion de credencial Google.
+- Validacion de campos vacios.
+- Mensaje de credenciales invalidas.
+- Bloqueo del usuario al tercer intento fallido.
+- Token de sesion firmado para el frontend.
+
+Antes de iniciar el backend, ejecuta el script:
+
+```sql
+pos-backend/database/01_login_admin_cajero.sql
+```
+
+Usuarios demo:
+
+- `admin` / `admin123`
+- `cajero` / `cajero123`
+
 ## Estructura
 
 - `src/index.js`: aplicacion Express.
