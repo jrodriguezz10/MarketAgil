@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getToken } from '../utils/auth';
 import { API_URL } from '../utils/apiBase';
-import { AuthResponse, DashboardStats, LoginData } from '../types';
+import { AuthResponse, Categoria, CategoriaPayload, DashboardStats, LoginData } from '../types';
 
 const buildAuthHeaders = (token?: string | null) =>
   token ? { Authorization: `Bearer ${token}` } : {};
@@ -47,4 +47,31 @@ export const getDashboardStats = async (): Promise<DashboardStats> => {
     headers: buildAuthHeaders(getToken())
   });
   return res.data;
+};
+
+export const getCategorias = async (): Promise<Categoria[]> => {
+  const res = await axios.get(`${API_URL}/categorias`, {
+    headers: buildAuthHeaders(getToken())
+  });
+  return res.data;
+};
+
+export const createCategoria = async (payload: CategoriaPayload): Promise<Categoria> => {
+  const res = await axios.post(`${API_URL}/categorias`, payload, {
+    headers: buildAuthHeaders(getToken())
+  });
+  return res.data;
+};
+
+export const updateCategoria = async (id: number, payload: CategoriaPayload): Promise<Categoria> => {
+  const res = await axios.put(`${API_URL}/categorias/${id}`, payload, {
+    headers: buildAuthHeaders(getToken())
+  });
+  return res.data;
+};
+
+export const deleteCategoria = async (id: number): Promise<void> => {
+  await axios.delete(`${API_URL}/categorias/${id}`, {
+    headers: buildAuthHeaders(getToken())
+  });
 };

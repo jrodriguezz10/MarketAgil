@@ -48,6 +48,8 @@ export interface Categoria {
   descripcion?: string;
 }
 
+export type CategoriaPayload = Omit<Categoria, 'id'>;
+
 export interface VentaProducto {
   producto: Producto;
   cantidad: number;

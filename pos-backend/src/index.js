@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const env = require('./config/env');
 const authRoutes = require('./routes/auth');
+const categoriasRoutes = require('./routes/categorias');
 
 const app = express();
 app.disable('x-powered-by');
@@ -40,11 +41,17 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/categorias', categoriasRoutes);
 
 app.use((err, _req, res, _next) => {
-  res.status(err.status || 500).json({
-    message: err.message || 'Error interno del servidor.'
-  });
+  const status = err.status || 500;
+  let message = err.message || 'Error interno del servidor.';
+
+  if (err?.code === 'MODULE_NOT_FOUND' && typeof message === 'string') {
+    message = 'Falta una dependencia del servidor. Ejecuta npm install y reinicia el backend.';
+  }
+
+  res.status(status).json({ message });
 });
 
 app.listen(env.port, '0.0.0.0', () => {

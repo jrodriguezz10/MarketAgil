@@ -5,9 +5,12 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import InicioPage from './pages/01-InicioPage';
 import LoginPage from './pages/02-LoginPage';
 import Dashboard from './pages/03-Dashboard';
+import CategoriasPage from './pages/04-CategoriasPage';
 import Footer from './components/layout/Footer';
 import Header from './components/layout/Header';
 import { useAppConfig } from './hooks/useAppConfig';
+import { PermissionKey } from './types';
+import { canAccess } from './utils/permissions';
 
 const SharedAppConfigSync: React.FC = () => {
   useAppConfig();
@@ -34,6 +37,17 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
+const FeatureRoute: React.FC<{ permission: PermissionKey; children: React.ReactNode }> = ({
+  permission,
+  children
+}) => {
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+
+  return canAccess(user, permission) ? <>{children}</> : <Navigate to="/dashboard" replace />;
+};
+
 const App: React.FC = () => {
   return (
     <AuthProvider>
@@ -51,6 +65,15 @@ const App: React.FC = () => {
                   <PrivateLayout>
                     <Routes>
                       <Route path="" element={<Dashboard />} />
+                      <Route
+                        path="categorias"
+                        element={
+                          <FeatureRoute permission="categorias">
+                            <CategoriasPage />
+                          </FeatureRoute>
+                        }
+                      />
+                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
                     </Routes>
                   </PrivateLayout>
                 </PrivateRoute>
